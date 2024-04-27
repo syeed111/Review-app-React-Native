@@ -1,15 +1,27 @@
-import { StatusBar } from "expo-status-bar";
+import React, { useState, useCallback } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import Home from "./screens/home";
-import About from "./screens/about";
-import ReviewDetails from "./screens/reviewDetails";
+import * as Font from "expo-font";
+import { useFonts } from "expo-font";
+import * as SplashScreen from "expo-splash-screen";
+
+SplashScreen.preventAutoHideAsync();
 
 export default function App() {
-  return (
-    <View style={styles.container}>
-      <Home />
-    </View>
-  );
-}
+  const [fontsLoaded, fontError] = useFonts({
+    "nunito-regular": require("./assets/fonts/NunitoSans_7pt-Regular.ttf"),
+    "nunito-bold": require("./assets/fonts/NunitoSans_7pt-Bold.ttf"),
+  });
 
-const styles = StyleSheet.create({});
+  const onLayoutRootView = useCallback(async () => {
+    if (fontsLoaded || fontError) {
+      await SplashScreen.hideAsync();
+    }
+  }, [fontsLoaded, fontError]);
+
+  if (!fontsLoaded && !fontError) {
+    return null;
+  }
+
+  return <Home />;
+}
