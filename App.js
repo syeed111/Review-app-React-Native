@@ -1,36 +1,34 @@
-import React, { useState, useCallback, useEffect } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import React, { useState } from "react";
+import * as Font from "expo-font";
+import AppLoading from "expo-app-loading";
 import Home from "./screens/home";
-import { useFonts } from "expo-font";
-import * as SplashScreen from "expo-splash-screen";
+import Navigator from "./routes/homeStack";
+
+const getFonts = async () => {
+  try {
+    await Font.loadAsync({
+      "nunito-regular": require("./assets/fonts/NunitoSans_7pt-Regular.ttf"),
+      "nunito-bold": require("./assets/fonts/NunitoSans_7pt-Bold.ttf"),
+    });
+  } catch (error) {
+    console.error("Error loading fonts:", error);
+  }
+};
 
 export default function App() {
-  const [fontsLoaded, fontError] = useFonts({
-    "nunito-regular": require("./assets/fonts/NunitoSans_7pt-Regular.ttf"),
-    "nunito-bold": require("./assets/fonts/NunitoSans_7pt-Bold.ttf"),
-  });
+  const [fontsLoaded, setFontsLoaded] = useState(false);
 
-  useEffect(() => {
-    async function prepare() {
-      try {
-        await SplashScreen.preventAutoHideAsync();
-      } catch (e) {
-        console.warn(e);
-      }
-    }
+  console.log("App component rendering");
 
-    prepare();
-  }, []);
-
-  const onLayoutRootView = useCallback(async () => {
-    if (fontsLoaded || fontError) {
-      await SplashScreen.hideAsync();
-    }
-  }, [fontsLoaded, fontError]);
-
-  if (!fontsLoaded && !fontError) {
-    return null;
+  if (fontsLoaded) {
+    return <Navigator />;
+  } else {
+    return (
+      <AppLoading
+        startAsync={getFonts}
+        onFinish={() => setFontsLoaded(true)}
+        onError={console.warn}
+      />
+    );
   }
-
-  return <Home />;
 }
