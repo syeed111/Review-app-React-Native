@@ -28,10 +28,7 @@
       [
         "expo-font",
         {
-          "fonts": [
-            "./assets/fonts/NunitoSans_7pt-Bold.ttf",
-            "./assets/fonts/NunitoSans_7pt-Regular.ttf"
-          ]
+          "fonts": ["./assets/fonts/NunitoSans_7pt-Bold.ttf"]
         }
       ]
     ]
